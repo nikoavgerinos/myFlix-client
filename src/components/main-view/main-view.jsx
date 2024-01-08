@@ -3,6 +3,7 @@ import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
+import { ROUTES } from "/src/routes.js"; // Import the Routes object
 
 export const MainView = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -17,7 +18,7 @@ export const MainView = () => {
       return;
     }
 
-    fetch("https://nikolaos-myflix-f421700e5033.herokuapp.com/movies", {
+    fetch(`${ROUTES.BASE_URL}/movies`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => response.json())

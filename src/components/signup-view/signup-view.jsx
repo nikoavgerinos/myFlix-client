@@ -16,13 +16,14 @@ export const SignupView = () => {
       Birthday: birthday,
     };
 
-    fetch("https://movieapicf-30767e813dee.herokuapp.com/users", {
+    fetch("https://nikolaos-myflix-f421700e5033.herokuapp.com/users", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json",
       },
     }).then((response) => {
+      console.log(data);
       if (response.ok) {
         alert("Signup successful");
         window.location.reload();
@@ -71,7 +72,9 @@ export const SignupView = () => {
           required
         />
       </label>
-      <button type="submit">Submit</button>
+      <button type="submit" onClick={handleSubmit}>
+        Submit
+      </button>
     </form>
   );
 };
