@@ -1,0 +1,7 @@
+img {
+    width: 100%;
+    height: auto; /* Maintain aspect ratio */
+    max-width: 1000px; /* Prevent images from exceeding their container's width */
+    max-height: 1500px; /* Set a maximum height to control the image size */
+  }
+  
