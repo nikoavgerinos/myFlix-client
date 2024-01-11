@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
-import { LoginView } from "../login-view/login-view";
-import { SignupView } from "../signup-view/signup-view";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-
-import "../movie-view/movie-view.scss";
+import { LoginView } from "../login-view/login-view.jsx";
+import { SignupView } from "../signup-view/signup-view.jsx";
+import { NavigationBar } from "../navigation-bar/navigation-bar.jsx";
+import { ProfileView } from "../profile-view/profile-view.jsx";
+import "./main-view.scss";
+import { Row } from "react-bootstrap";
+import { Col } from "react-bootstrap";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 export const MainView = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -14,8 +16,8 @@ export const MainView = () => {
   const [user, setUser] = useState(storedUser ? storedUser : null);
   const [token, setToken] = useState(storedToken ? storedToken : null);
   const [movies, setMovies] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null);
 
+  // Connect App to API with Hook
   useEffect(() => {
     if (!token) {
       return;
@@ -26,84 +28,210 @@ export const MainView = () => {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         const moviesFromApi = data.map((movie) => {
           return {
             _id: movie._id,
             Title: movie.Title,
+            ImagePath: movie.ImagePath,
             Description: movie.Description,
+            Year: movie.Year,
             Genre: {
               Name: movie.Genre.Name,
             },
             Director: {
               Name: movie.Director.Name,
             },
-            ImagePath: movie.ImagePath, // Add this line to include the ImagePath property
           };
         });
-
         setMovies(moviesFromApi);
       });
   }, [token]);
 
-  if (!user) {
-    return (
-      <Row className="justify-content-md-center">
-        <Col md={5}>
-          {" "}
-          {/* Offset by 3 columns to center */}
-          <LoginView
-            onLoggedIn={(user, token) => {
-              setUser(user);
-              setToken(token);
-            }}
-          />
-          or
-          <SignupView />
-        </Col>
-      </Row>
-    );
-  }
+  // Add Favorite Movie
+  const addFav = (id) => {
+    fetch(
+      `https://nikolaos-myflix-f421700e5033.herokuapp.com/users/${user.Username}/favorites/${id}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          alert("Failed to add");
+        }
+      })
+      .then((user) => {
+        if (user) {
+          alert("Movie successfully added to your favorites! 🍿");
+          localStorage.setItem("user", JSON.stringify(user));
+          setUser(user);
+          //setIsFavorite(true);
+        }
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  };
 
-  if (selectedMovie) {
-    return (
-      <Row className="justify-content-md-center">
-        <Col md={8}>
-          <MovieView
-            movie={selectedMovie}
-            onBackClick={() => setSelectedMovie(null)}
-          />
-        </Col>
-      </Row>
-    );
-  }
-
-  if (movies.length === 0) {
-    return <div>The list is empty!</div>;
-  }
+  // Remove Favorite Movie
+  const removeFav = (id) => {
+    fetch(
+      `https://nikolaos-myflix-f421700e5033.herokuapp.com/users/${user.Username}/favorites/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          alert("Failed to remove");
+        }
+      })
+      .then((user) => {
+        if (user) {
+          alert("Movie removed from your favorites. 😢");
+          localStorage.setItem("user", JSON.stringify(user));
+          setUser(user);
+        }
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  };
 
   return (
-    <Row className="justify-content-md-center">
-      <div className="col-12">
-        <button
-          onClick={() => {
-            setUser(null);
-            setToken(null);
-            localStorage.clear();
-          }}
-        >
-          Logout
-        </button>
-      </div>
-      {movies.map((movie) => (
-        <div key={movie._id} className="col-md-3 col-sm-6">
-          <MovieCard
-            movie={movie}
-            onMovieClick={(newSelectedMovie) => {
-              setSelectedMovie(newSelectedMovie);
-            }}
+    <BrowserRouter>
+      <NavigationBar
+        user={user}
+        onLoggedOut={() => {
+          setUser(null);
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        }}
+      />
+      <Row className="justify-content-center my-5">
+        <Routes>
+          {/* Return SignupView if not logged in, otherwise mainpage */}
+          <Route
+            path="/signup"
+            element={
+              <>
+                {user ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Col md={5}>
+                    <SignupView />
+                  </Col>
+                )}
+              </>
+            }
           />
-        </div>
-      ))}
-    </Row>
+          {/* Return LoginView if not logged in, otherwise mainpage */}
+          <Route
+            path="/login"
+            element={
+              <>
+                {user ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Col md={5}>
+                    <LoginView
+                      onLoggedIn={(user, token) => {
+                        setUser(user);
+                        setToken(token);
+                      }}
+                    />
+                  </Col>
+                )}
+              </>
+            }
+          />
+          {/* Return MovieView if logged in, otherwise LoginView */}
+          <Route
+            path="/movies/:movieId"
+            element={
+              <>
+                {!user ? (
+                  <Navigate to="/login" replace />
+                ) : movies.length === 0 ? (
+                  <Col>There is no movie</Col>
+                ) : (
+                  <Col md={12}>
+                    <MovieView
+                      movies={movies}
+                      removeFav={removeFav}
+                      addFav={addFav}
+                    />
+                  </Col>
+                )}
+              </>
+            }
+          />
+          {/* Return MovieCards if logged in, otherwise LoginView */}
+          <Route
+            path="/"
+            element={
+              <>
+                {!user ? (
+                  <Navigate to="/login" replace />
+                ) : movies.length === 0 ? (
+                  <Col>The list is empty</Col>
+                ) : (
+                  <>
+                    {movies.map((movie) => (
+                      <Col
+                        md={6}
+                        lg={4}
+                        xl={3}
+                        className="mb-5 col-8"
+                        key={movie._id}
+                      >
+                        <MovieCard
+                          movie={movie}
+                          removeFav={removeFav}
+                          addFav={addFav}
+                          isFavorite={user.FavoriteMovies.includes(movie._id)}
+                        />
+                      </Col>
+                    ))}
+                  </>
+                )}
+              </>
+            }
+          />
+          {/* Return ProfileView if logged in, otherwise LoginView */}
+          <Route
+            path="/profile"
+            element={
+              <>
+                {!user ? (
+                  <Navigate to="/login" replace />
+                ) : (
+                  <Col>
+                    <ProfileView
+                      user={user}
+                      movies={movies}
+                      removeFav={removeFav}
+                      addFav={addFav}
+                      setUser={setUser}
+                    />
+                  </Col>
+                )}
+              </>
+            }
+          />
+        </Routes>
+      </Row>
+    </BrowserRouter>
   );
 };

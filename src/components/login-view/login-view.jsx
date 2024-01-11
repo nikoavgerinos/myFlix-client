@@ -2,11 +2,12 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
-export const LoginView = ({ onLoggedIn, uniqueIdentifier }) => {
+export const LoginView = ({ onLoggedIn }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (event) => {
+    // this prevents the default behavior of the form which is to reload the entire page
     event.preventDefault();
 
     const data = {
@@ -38,19 +39,18 @@ export const LoginView = ({ onLoggedIn, uniqueIdentifier }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group controlId={`formUsername${uniqueIdentifier}`}>
+    <Form onSubmit={handleSubmit} className="mt-5">
+      <Form.Group controlId="formUsername">
         <Form.Label>Username:</Form.Label>
         <Form.Control
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
-          minLength="3"
+          minLength="5"
         />
       </Form.Group>
-
-      <Form.Group controlId={`formPassword${uniqueIdentifier}`}>
+      <Form.Group controlId="formPassword">
         <Form.Label>Password:</Form.Label>
         <Form.Control
           type="password"
@@ -59,7 +59,7 @@ export const LoginView = ({ onLoggedIn, uniqueIdentifier }) => {
           required
         />
       </Form.Group>
-      <Button variant="primary" type="submit">
+      <Button type="submit" className="mt-2">
         Submit
       </Button>
     </Form>
