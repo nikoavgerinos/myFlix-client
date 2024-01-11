@@ -1,52 +1,46 @@
+import React from "react";
 import PropTypes from "prop-types";
-import { Card, Button } from "react-bootstrap";
+import "./movie-card.scss";
+import { Button, Card } from "react-bootstrap";
+import { Link } from "react-router-dom";
+
 import "../movie-card/movie-card.scss";
 
-// export const MovieCard = ({ movie, onMovieClick }) => {
-//   return (
-//     <Card className="h-100" onClick={() => onMovieClick(movie)}>
-//       <Card.Img variant="top" src={movie.ImagePath} alt={movie.Title} />
-//       <Card.Body>
-//         <Card.Title>{movie.Title}</Card.Title>
-//         <Card.Text>Description: {movie.Description}</Card.Text>
-//         <Card.Text>Genre: {movie.Genre.Name}</Card.Text>
-//         <Card.Text>Director: {movie.Director.Name}</Card.Text>
-//         {/* Add other movie information as needed */}
-//       </Card.Body>
-//     </Card>
-//   );
-// };
+export const MovieCard = ({ movie, addFav, removeFav, isFavorite }) => {
+  const handleCardClick = (e) => {
+    // Prevent the card click event from propagating when the "Add to Favorite" button is clicked
+    if (e.target.tagName !== "BUTTON") {
+      // Navigate to the movie details page when the card is clicked
+      window.location.href = `/movies/${encodeURIComponent(movie._id)}`;
+    }
+  };
 
-export const MovieCard = ({ movie, onMovieClick }) => {
   return (
-    <Card className="h-100" onClick={() => onMovieClick(movie)}>
-      <Card.Img variant="top" src={movie.ImagePath} />
+    <Card className="h-100 mt-5 card-shadow" onClick={handleCardClick}>
+      <Card.Img variant="top card-img" src={movie.ImagePath} />
       <Card.Body>
         <Card.Title>{movie.Title}</Card.Title>
-        {/* <Card.Text>Description: {movie.Description}</Card.Text> */}
         <Card.Text>Genre: {movie.Genre.Name}</Card.Text>
         <Card.Text>Director: {movie.Director.Name}</Card.Text>
-        <Button onClick={() => onMovieClick(movie)} variant="link">
-          Open
-        </Button>
+        <div>
+          {isFavorite ? (
+            <Button className="my-2 me-2" onClick={() => removeFav(movie._id)}>
+              <i className="fas fa-thumbs-down"></i> Remove from Favorite
+            </Button>
+          ) : (
+            <Button className="my-2 me-2" onClick={() => addFav(movie._id)}>
+              <i className="fas fa-thumbs-up"></i> Add to Favorite
+            </Button>
+          )}
+        </div>
       </Card.Body>
     </Card>
   );
 };
 
-// Define PropTypes for MovieCard
+// define all the props constraints for the MovieCard
 MovieCard.propTypes = {
   movie: PropTypes.shape({
-    ImagePath: PropTypes.string.isRequired,
-    Title: PropTypes.string.isRequired,
-    Description: PropTypes.string.isRequired,
-    Genre: PropTypes.shape({
-      Name: PropTypes.string.isRequired,
-    }).isRequired,
-    Director: PropTypes.shape({
-      Name: PropTypes.string.isRequired,
-    }).isRequired,
-    // Add other PropTypes for movie information as needed
+    Title: PropTypes.string,
   }).isRequired,
-  onMovieClick: PropTypes.func.isRequired,
 };
