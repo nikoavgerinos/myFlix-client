@@ -24,12 +24,18 @@ export const MovieCard = ({ movie, addFav, removeFav, isFavorite }) => {
         <Card.Text>Director: {movie.Director.Name}</Card.Text>
         <div>
           {isFavorite ? (
-            <Button className="my-2 me-2" onClick={() => removeFav(movie._id)}>
-              <i className="fas fa-thumbs-down"></i> Remove from Favorite
+            <Button
+              className="my-2 me-2 remove-fav-button"
+              onClick={() => removeFav(movie._id)}
+            >
+              Remove from Favorite
             </Button>
           ) : (
-            <Button className="my-2 me-2" onClick={() => addFav(movie._id)}>
-              <i className="fas fa-thumbs-up"></i> Add to Favorite
+            <Button
+              className="my-2 me-2 add-fav-button"
+              onClick={() => addFav(movie._id)}
+            >
+              Add to Favorite
             </Button>
           )}
         </div>

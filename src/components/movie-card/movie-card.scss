@@ -20,4 +20,10 @@
   object-fit: cover !important; /* Maintain aspect ratio and cover the card */
 }
 
-/* Add any other styles you need for your movie cards here */
+// REMOVE FAVE BUTTON
+.remove-fav-button {
+  background-color: rgb(209, 56, 56) !important;
+  color: white !important;
+  border: none !important;
+  cursor: pointer !important;
+}
