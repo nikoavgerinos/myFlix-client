@@ -1,3 +1,5 @@
+import React from "react";
+
 import { useState, useEffect } from "react";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
@@ -5,6 +7,7 @@ import { LoginView } from "../login-view/login-view.jsx";
 import { SignupView } from "../signup-view/signup-view.jsx";
 import { NavigationBar } from "../navigation-bar/navigation-bar.jsx";
 import { ProfileView } from "../profile-view/profile-view.jsx";
+import { FavoritesView } from "../favorites-view/favorites-view.jsx";
 import "./main-view.scss";
 import { Row } from "react-bootstrap";
 import { Col } from "react-bootstrap";
@@ -224,6 +227,25 @@ export const MainView = () => {
                       removeFav={removeFav}
                       addFav={addFav}
                       setUser={setUser}
+                    />
+                  </Col>
+                )}
+              </>
+            }
+          />
+          <Route
+            path="/favorites"
+            element={
+              <>
+                {!user ? (
+                  <Navigate to="/login" replace />
+                ) : (
+                  <Col md={12}>
+                    <FavoritesView
+                      user={user}
+                      movies={movies}
+                      removeFav={removeFav}
+                      addFav={addFav}
                     />
                   </Col>
                 )}

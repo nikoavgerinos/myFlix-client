@@ -9,17 +9,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "bootstrap": "^5.2.0",
     "prop-types": "^15.8.1",
     "react": "18.0.0",
     "react-bootstrap": "^2.9.2",
     "react-dom": "18.0.0",
     "react-router-dom": "^6.21.2",
-    "react-scripts": "4.0.0"
+    "react-scripts": "^5.0.1"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.10.3",
     "parcel": "^2.10.3",
+    "parcel-bundler": "^1.12.5",
     "process": "^0.11.10"
   }
 }

@@ -1,3 +1,5 @@
+import React from "react";
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Col, Row, Container } from "react-bootstrap";
@@ -149,34 +151,6 @@ export const ProfileView = ({ user, movies, setUser, removeFav, addFav }) => {
             </Button>
           </Form>
         </Col>
-      </Row>
-      <Row>
-        <h2>Favorite Movies</h2>
-        <Row className="justify-content-center">
-          {favoriteMovieList?.length !== 0 ? (
-            favoriteMovieList?.map((movie) => (
-              <Col
-                sm={7}
-                md={5}
-                lg={3}
-                xl={2}
-                className="mx-2 mt-2 mb-5 col-6 similar-movies-img"
-                key={movie._id}
-              >
-                <MovieCard
-                  movie={movie}
-                  removeFav={removeFav}
-                  addFav={addFav}
-                  isFavorite={user.FavoriteMovies.includes(movie._id)}
-                />
-              </Col>
-            ))
-          ) : (
-            <Col>
-              <p>There are no favorites Movies</p>
-            </Col>
-          )}
-        </Row>
       </Row>
     </Container>
   );

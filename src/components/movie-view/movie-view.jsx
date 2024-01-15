@@ -1,3 +1,5 @@
+import React from "react";
+
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
@@ -18,8 +20,6 @@ export const MovieView = ({ movies, removeFav, addFav }) => {
 
   // User
   const user = JSON.parse(localStorage.getItem("user"));
-  //const FavoriteMovies = {user.FavoriteMovies}; //parsing error? how to get user in?
-
   // Debug
   console.log(user);
 
@@ -54,10 +54,11 @@ export const MovieView = ({ movies, removeFav, addFav }) => {
             <span>{movie.Year}</span>
           </div>
           <div>
-            {user.FavoriteMovies.includes(movie._id) ? (
+            {user &&
+            user.FavoriteMovies &&
+            user.FavoriteMovies.includes(movie._id) ? (
               <Button
                 className="my-2 me-2"
-                on
                 onClick={() => removeFav(movie._id)}
               >
                 Remove from Favorite
@@ -89,7 +90,11 @@ export const MovieView = ({ movies, removeFav, addFav }) => {
                 movie={movie}
                 removeFav={removeFav}
                 addFav={addFav}
-                isFavorite={user.FavoriteMovies.includes(movie._id)}
+                isFavorite={
+                  user &&
+                  user.FavoriteMovies &&
+                  user.FavoriteMovies.includes(movie._id)
+                }
               />
             </Col>
           ))

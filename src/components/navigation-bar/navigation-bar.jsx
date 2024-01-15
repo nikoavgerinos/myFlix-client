@@ -1,7 +1,9 @@
+import React from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
-import "../navigation-bar/navigation-bar.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Import FontAwesome icons
+import { faHeart } from "@fortawesome/free-solid-svg-icons"; // Import
+import "./navigation-bar.scss";
 
 export const NavigationBar = ({ user, onLoggedOut }) => {
   return (
@@ -11,7 +13,7 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
           MyFlix
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="-basic-navbar-nav">
+        <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             {!user && (
               <>
@@ -31,6 +33,12 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                 <Nav.Link as={Link} to="/profile">
                   Profile
                 </Nav.Link>
+                {/* Add spacing around the heart icon */}
+                <div style={{ margin: "0 20px" }}>
+                  <Link to="/favorites">
+                    <FontAwesomeIcon icon={faHeart} size="lg" color="red" />
+                  </Link>
+                </div>
                 <Nav.Link onClick={onLoggedOut}>Logout</Nav.Link>
               </>
             )}
