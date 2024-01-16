@@ -1,6 +1,7 @@
 .card {
   border: none !important;
   border-radius: 10px !important;
+  margin: 10px !important;
   transition: transform .4s, box-shadow .4s, opacity .4s !important;
   transform: translateY(10px) !important;
   box-shadow: 0 4px 8px #0003 !important;
@@ -15,6 +16,7 @@
   object-fit: cover !important;
   border-top-left-radius: 10px !important;
   border-top-right-radius: 10px !important;
+  max-height: 500px !important;
 }
 
 .remove-fav-button {
@@ -23,8 +25,6 @@
   background-color: #d13838 !important;
   border: none !important;
 }
-
-
 
 .fa-lg {
   margin-top: 10px !important;
@@ -44,6 +44,10 @@
 h2 {
   text-align: center;
   padding-top: 40px;
+}
+
+.mb-3 {
+  margin-top: 40px !important;
 }
 
 :root, [data-bs-theme="light"] {
