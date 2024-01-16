@@ -1,14 +1,18 @@
+// MovieView.js
 import React from "react";
-
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { Col, Row } from "react-bootstrap";
 import { MovieCard } from "../movie-card/movie-card";
 
-export const MovieView = ({ movies, removeFav, addFav }) => {
+export const MovieView = ({ movies, removeFav, addFav, user }) => {
   const { movieId } = useParams();
   const movie = movies.find((movie) => movie._id === movieId);
+
+  if (!movie) {
+    return <div>Loading...</div>; // Handle the case when movie is not found
+  }
 
   // Similar Movies
   const selectedMovie = movies.find((movie) => movie._id === movieId);
@@ -18,10 +22,8 @@ export const MovieView = ({ movies, removeFav, addFav }) => {
     );
   });
 
-  // User
-  const user = JSON.parse(localStorage.getItem("user"));
-  // Debug
-  console.log(user);
+  // Determine if the movie is a favorite
+  const isFavorite = user && user.FavoriteMovies.includes(movie._id);
 
   return (
     <>
@@ -54,20 +56,14 @@ export const MovieView = ({ movies, removeFav, addFav }) => {
             <span>{movie.Year}</span>
           </div>
           <div>
-            {user &&
-            user.FavoriteMovies &&
-            user.FavoriteMovies.includes(movie._id) ? (
-              <Button
-                className="my-2 me-2"
-                onClick={() => removeFav(movie._id)}
-              >
-                Remove from Favorite
-              </Button>
-            ) : (
-              <Button className="my-2 me-2" onClick={() => addFav(movie._id)}>
-                Add to Favorite
-              </Button>
-            )}
+            <Button
+              className={`my-2 me-2 ${isFavorite ? "remove-fav-button" : ""}`}
+              onClick={() =>
+                isFavorite ? removeFav(movie._id) : addFav(movie._id)
+              }
+            >
+              {isFavorite ? "Remove from Favorite" : "Add to Favorite"}
+            </Button>
           </div>
           <Link to={`/`}>
             <Button className="my-2">Back</Button>
@@ -90,11 +86,7 @@ export const MovieView = ({ movies, removeFav, addFav }) => {
                 movie={movie}
                 removeFav={removeFav}
                 addFav={addFav}
-                isFavorite={
-                  user &&
-                  user.FavoriteMovies &&
-                  user.FavoriteMovies.includes(movie._id)
-                }
+                isFavorite={user && user.FavoriteMovies.includes(movie._id)}
               />
             </Col>
           ))
