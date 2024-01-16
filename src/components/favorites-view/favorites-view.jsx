@@ -3,6 +3,17 @@ import { Col, Row } from "react-bootstrap";
 import { MovieCard } from "../movie-card/movie-card";
 
 export const FavoritesView = ({ user, movies, removeFav, addFav }) => {
+  // Check if the user object is defined and contains FavoriteMovies
+  if (!user || !user.FavoriteMovies) {
+    return (
+      <Row>
+        <Col className="text-center">
+          <p>No user data or favorite movies found.</p>
+        </Col>
+      </Row>
+    );
+  }
+
   // Return list of favorite Movies
   const favoriteMovieList = movies.filter((m) =>
     user.FavoriteMovies.includes(m._id)

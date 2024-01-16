@@ -1,6 +1,4 @@
-import React from "react";
-
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view.jsx";
@@ -9,247 +7,176 @@ import { NavigationBar } from "../navigation-bar/navigation-bar.jsx";
 import { ProfileView } from "../profile-view/profile-view.jsx";
 import { FavoritesView } from "../favorites-view/favorites-view.jsx";
 import "./main-view.scss";
-import { Row } from "react-bootstrap";
-import { Col } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setFilter } from "../../redux/actions";
 
 export const MainView = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const storedToken = localStorage.getItem("token");
-  const [user, setUser] = useState(storedUser ? storedUser : null);
-  const [token, setToken] = useState(storedToken ? storedToken : null);
+  const [user, setUser] = useState(storedUser || null);
+  const [token, setToken] = useState(storedToken || null);
   const [movies, setMovies] = useState([]);
+  const dispatch = useDispatch();
+  const filter = useSelector((state) => state.filter.filter);
 
-  // Connect App to API with Hook
   useEffect(() => {
     if (!token) {
       return;
     }
-
     fetch("https://nikolaos-myflix-f421700e5033.herokuapp.com/movies", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        const moviesFromApi = data.map((movie) => {
-          return {
-            _id: movie._id,
-            Title: movie.Title,
-            ImagePath: movie.ImagePath,
-            Description: movie.Description,
-            Year: movie.Year,
-            Genre: {
-              Name: movie.Genre.Name,
-            },
-            Director: {
-              Name: movie.Director.Name,
-            },
-          };
-        });
+        const moviesFromApi = data.map((movie) => ({
+          _id: movie._id,
+          Title: movie.Title,
+          ImagePath: movie.ImagePath,
+          Description: movie.Description,
+          Year: movie.Year,
+          Genre: {
+            Name: movie.Genre.Name,
+          },
+          Director: {
+            Name: movie.Director.Name,
+          },
+        }));
         setMovies(moviesFromApi);
+      })
+      .catch((error) => {
+        console.error("Error fetching movies:", error);
       });
   }, [token]);
 
-  // Add Favorite Movie
-  const addFav = (id) => {
-    fetch(
-      `https://nikolaos-myflix-f421700e5033.herokuapp.com/users/${user.Username}/favorites/${id}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  const addFav = (movieId) => {
+    if (user) {
+      const updatedUser = { ...user };
+
+      if (!updatedUser.FavoriteMovies.includes(movieId)) {
+        updatedUser.FavoriteMovies.push(movieId);
+        setUser(updatedUser);
       }
-    )
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          alert("Failed to add");
-        }
-      })
-      .then((user) => {
-        if (user) {
-          alert("Movie successfully added to your favorites! 🍿");
-          localStorage.setItem("user", JSON.stringify(user));
-          setUser(user);
-          //setIsFavorite(true);
-        }
-      })
-      .catch((error) => {
-        console.error("Error: ", error);
-      });
+    }
   };
 
-  // Remove Favorite Movie
-  const removeFav = (id) => {
-    fetch(
-      `https://nikolaos-myflix-f421700e5033.herokuapp.com/users/${user.Username}/favorites/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  const removeFav = (movieId) => {
+    if (user) {
+      const updatedUser = { ...user };
+      const index = updatedUser.FavoriteMovies.indexOf(movieId);
+
+      if (index !== -1) {
+        updatedUser.FavoriteMovies.splice(index, 1);
+        setUser(updatedUser);
       }
-    )
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          alert("Failed to remove");
-        }
-      })
-      .then((user) => {
-        if (user) {
-          alert("Movie removed from your favorites. 😢");
-          localStorage.setItem("user", JSON.stringify(user));
-          setUser(user);
-        }
-      })
-      .catch((error) => {
-        console.error("Error: ", error);
-      });
+    }
   };
+
+  const handleFilterChange = (value) => {
+    dispatch(setFilter(value));
+  };
+
+  const filteredMovies = movies.filter((movie) =>
+    movie.Title.toLowerCase().includes(filter.toLowerCase())
+  );
 
   return (
     <BrowserRouter>
       <NavigationBar
         user={user}
         onLoggedOut={() => {
-          setUser(null);
+          // Clear user data and token from local storage
           localStorage.removeItem("token");
           localStorage.removeItem("user");
+
+          // Set user state to null (optional)
+          setUser(null);
+
+          // Redirect to the root path ("/")
+          window.location.href = "/";
+
+          // Show a logout alert
+          alert("Successfully logged out");
         }}
       />
       <Row className="justify-content-center my-5">
+        <Col md={12}></Col>
         <Routes>
-          {/* Return SignupView if not logged in, otherwise mainpage */}
           <Route
             path="/signup"
-            element={
-              <>
-                {user ? (
-                  <Navigate to="/" />
-                ) : (
-                  <Col md={5}>
-                    <SignupView />
-                  </Col>
-                )}
-              </>
-            }
+            element={user ? <Navigate to="/" /> : <SignupView />}
           />
-          {/* Return LoginView if not logged in, otherwise mainpage */}
           <Route
             path="/login"
             element={
-              <>
-                {user ? (
-                  <Navigate to="/" />
-                ) : (
-                  <Col md={5}>
-                    <LoginView
-                      onLoggedIn={(user, token) => {
-                        setUser(user);
-                        setToken(token);
-                      }}
-                    />
-                  </Col>
-                )}
-              </>
+              user ? (
+                <Navigate to="/" />
+              ) : (
+                <LoginView
+                  onLoggedIn={(user, token) => {
+                    setUser(user);
+                    setToken(token);
+                  }}
+                />
+              )
             }
           />
-          {/* Return MovieView if logged in, otherwise LoginView */}
           <Route
             path="/movies/:movieId"
             element={
-              <>
-                {!user ? (
-                  <Navigate to="/login" replace />
-                ) : movies.length === 0 ? (
-                  <Col>There is no movie</Col>
-                ) : (
-                  <Col md={12}>
-                    <MovieView
-                      movies={movies}
-                      removeFav={removeFav}
-                      addFav={addFav}
-                    />
-                  </Col>
-                )}
-              </>
+              <MovieView
+                movies={filteredMovies}
+                addFav={addFav}
+                removeFav={removeFav}
+                user={user}
+              />
             }
           />
-          {/* Return MovieCards if logged in, otherwise LoginView */}
           <Route
             path="/"
             element={
               <>
-                {!user ? (
-                  <Navigate to="/login" replace />
-                ) : movies.length === 0 ? (
-                  <Col>The list is empty</Col>
-                ) : (
+                {user ? (
                   <>
-                    {movies.map((movie) => (
-                      <Col
-                        md={6}
-                        lg={4}
-                        xl={3}
-                        className="mb-5 col-8"
-                        key={movie._id}
-                      >
+                    <input
+                      type="text"
+                      onChange={(e) => handleFilterChange(e.target.value)}
+                      value={filter}
+                      placeholder="Filter movies..."
+                      className="mb-3 form-control"
+                    />
+                    {filteredMovies.map((m) => (
+                      <Col md={6} lg={4} xl={3} key={m._id}>
                         <MovieCard
-                          movie={movie}
+                          movie={m}
                           removeFav={removeFav}
                           addFav={addFav}
-                          isFavorite={user.FavoriteMovies.includes(movie._id)}
+                          isFavorite={
+                            user && user.FavoriteMovies.includes(m._id)
+                          }
                         />
                       </Col>
                     ))}
                   </>
-                )}
+                ) : null}
               </>
             }
           />
-          {/* Return ProfileView if logged in, otherwise LoginView */}
+
           <Route
             path="/profile"
-            element={
-              <>
-                {!user ? (
-                  <Navigate to="/login" replace />
-                ) : (
-                  <Col>
-                    <ProfileView
-                      user={user}
-                      movies={movies}
-                      removeFav={removeFav}
-                      addFav={addFav}
-                      setUser={setUser}
-                    />
-                  </Col>
-                )}
-              </>
-            }
+            element={<ProfileView user={user} movies={movies} />}
           />
           <Route
             path="/favorites"
             element={
-              <>
-                {!user ? (
-                  <Navigate to="/login" replace />
-                ) : (
-                  <Col md={12}>
-                    <FavoritesView
-                      user={user}
-                      movies={movies}
-                      removeFav={removeFav}
-                      addFav={addFav}
-                    />
-                  </Col>
-                )}
-              </>
+              <FavoritesView
+                user={user}
+                movies={movies}
+                removeFav={removeFav}
+                addFav={addFav}
+              />
             }
           />
         </Routes>

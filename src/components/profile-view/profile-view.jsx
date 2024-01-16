@@ -1,6 +1,4 @@
-import React from "react";
-
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Col, Row, Container } from "react-bootstrap";
 import { Button, Card, Form } from "react-bootstrap";
@@ -12,22 +10,17 @@ export const ProfileView = ({ user, movies, setUser, removeFav, addFav }) => {
   const [username, setUsername] = useState(user.Username);
   const [password, setPassword] = useState(user.Password);
   const [email, setEmail] = useState(user.Email);
-  const [birthday, setBirthday] = useState(user.Birthday);
+  const [birthday, setBirthday] = useState(formatDate(user.Birthday));
 
-  // Navigate
   const navigate = useNavigate();
 
-  // Return list of favorite Movies
   const favoriteMovieList = movies.filter((m) =>
     user.FavoriteMovies.includes(m._id)
   );
 
-  // Token
   const token = localStorage.getItem("token");
 
-  // Update user info
   const handleUpdate = (event) => {
-    // this prevents the default behavior of the form which is to reload the entire page
     event.preventDefault();
 
     const user = JSON.parse(localStorage.getItem("user"));
@@ -66,7 +59,6 @@ export const ProfileView = ({ user, movies, setUser, removeFav, addFav }) => {
       });
   };
 
-  // Delete User
   const handleDelete = () => {
     fetch(
       `https://my-movies-api-23e4e5dc7a5e.herokuapp.com/users/${user.Username}`,
@@ -81,12 +73,20 @@ export const ProfileView = ({ user, movies, setUser, removeFav, addFav }) => {
         setUser(null);
         alert("User has been deleted");
         localStorage.clear();
-        navigate("/"); // go back to home page
+        navigate("/");
       } else {
         alert("Something went wrong.");
       }
     });
   };
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
 
   return (
     <Container className="my-5">
@@ -123,8 +123,8 @@ export const ProfileView = ({ user, movies, setUser, removeFav, addFav }) => {
               <Form.Control
                 type="password"
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
-                value={null}
+                placeholder="Enter new password"
+                value={password}
               />
             </Form.Group>
             <Form.Group controlId="formEmail">
@@ -143,7 +143,7 @@ export const ProfileView = ({ user, movies, setUser, removeFav, addFav }) => {
                 onChange={(e) => setBirthday(e.target.value)}
               />
             </Form.Group>
-            <Button type="submit" onClick={handleUpdate} className="mt-2 me-2">
+            <Button type="submit" className="mt-2 me-2">
               Update
             </Button>
             <Button onClick={handleDelete} className="mt-2">

@@ -6,6 +6,7 @@
   transition: transform 0.2s, box-shadow 0.2s !important;
   transform: translateY(10px) !important; /* Start with a slight vertical offset */
   transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease !important;
+  margin: 10px !important;
 }
 
 .card:hover {
@@ -16,7 +17,7 @@
 .card-img {
   border-top-left-radius: 10px !important;
   border-top-right-radius: 10px !important;
-  // max-height: 300px !important; /* Adjust the maximum height as needed */
+  max-height: 500px !important; /* Adjust the maximum height as needed */
   object-fit: cover !important; /* Maintain aspect ratio and cover the card */
 }
 
