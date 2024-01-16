@@ -1,7 +1,6 @@
 .card {
   border: none !important;
   border-radius: 10px !important;
-  margin: 10px !important;
   transition: transform .4s, box-shadow .4s, opacity .4s !important;
   transform: translateY(10px) !important;
   box-shadow: 0 4px 8px #0003 !important;
@@ -16,7 +15,6 @@
   object-fit: cover !important;
   border-top-left-radius: 10px !important;
   border-top-right-radius: 10px !important;
-  max-height: 500px !important;
 }
 
 .remove-fav-button {
@@ -26,9 +24,7 @@
   border: none !important;
 }
 
-.mb-3 {
-  margin-top: 40px !important;
-}
+
 
 .fa-lg {
   margin-top: 10px !important;

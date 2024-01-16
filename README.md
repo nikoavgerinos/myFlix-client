@@ -77,4 +77,4 @@ This project represents the client-side development of myFlix, complementing the
 
 ## Contributing 🤝
 
-If you'd like to contribute, please fork the repository and create a pull request. We welcome your contributions to make myFlix even better!
+If you'd like to contribute, please fork the repository and create a pull request. We welcome your contributions to make myFlix even better
