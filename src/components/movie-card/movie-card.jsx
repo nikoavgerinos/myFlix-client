@@ -20,7 +20,7 @@ export const MovieCard = ({ movie, addFav, removeFav, isFavorite }) => {
     }
 
     // Navigate to the movie details page when the card is clicked
-    window.location.href = `/movies/${encodeURIComponent(movie._id)}`;
+    // window.location.href = `/movies/${encodeURIComponent(movie._id)}`;
   };
 
   return (
@@ -47,6 +47,9 @@ export const MovieCard = ({ movie, addFav, removeFav, isFavorite }) => {
                 Add to Favorite
               </Button>
             )}
+            <Link to={`/movies/${encodeURIComponent(movie._id)}`}>
+              <Button variant="link">Open</Button>
+            </Link>
           </div>
         </Card.Body>
       </Card>

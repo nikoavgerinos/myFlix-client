@@ -27295,8 +27295,8 @@ const MovieCard = ({ movie, addFav, removeFav, isFavorite })=>{
         // Check if the clicked element is a button or a link,
         // and prevent navigation in those cases
         if (e.target.tagName === "BUTTON" || e.target.tagName === "A" || e.target.closest("button") || e.target.closest("a")) return;
-        // Navigate to the movie details page when the card is clicked
-        window.location.href = `/movies/${encodeURIComponent(movie._id)}`;
+    // Navigate to the movie details page when the card is clicked
+    // window.location.href = `/movies/${encodeURIComponent(movie._id)}`;
     };
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         className: "movie-card-wrapper",
@@ -27342,24 +27342,41 @@ const MovieCard = ({ movie, addFav, removeFav, isFavorite })=>{
                             columnNumber: 11
                         }, undefined),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                            children: isFavorite ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactBootstrap.Button), {
-                                className: "my-2 me-2 remove-fav-button",
-                                onClick: ()=>removeFav(movie._id),
-                                children: "Remove from Favorite"
-                            }, void 0, false, {
-                                fileName: "src/components/movie-card/movie-card.jsx",
-                                lineNumber: 36,
-                                columnNumber: 15
-                            }, undefined) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactBootstrap.Button), {
-                                className: "my-2 me-2 add-fav-button",
-                                onClick: ()=>addFav(movie._id),
-                                children: "Add to Favorite"
-                            }, void 0, false, {
-                                fileName: "src/components/movie-card/movie-card.jsx",
-                                lineNumber: 43,
-                                columnNumber: 15
-                            }, undefined)
-                        }, void 0, false, {
+                            children: [
+                                isFavorite ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactBootstrap.Button), {
+                                    className: "my-2 me-2 remove-fav-button",
+                                    onClick: ()=>removeFav(movie._id),
+                                    children: "Remove from Favorite"
+                                }, void 0, false, {
+                                    fileName: "src/components/movie-card/movie-card.jsx",
+                                    lineNumber: 36,
+                                    columnNumber: 15
+                                }, undefined) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactBootstrap.Button), {
+                                    className: "my-2 me-2 add-fav-button",
+                                    onClick: ()=>addFav(movie._id),
+                                    children: "Add to Favorite"
+                                }, void 0, false, {
+                                    fileName: "src/components/movie-card/movie-card.jsx",
+                                    lineNumber: 43,
+                                    columnNumber: 15
+                                }, undefined),
+                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Link), {
+                                    to: `/movies/${encodeURIComponent(movie._id)}`,
+                                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactBootstrap.Button), {
+                                        variant: "link",
+                                        children: "Open"
+                                    }, void 0, false, {
+                                        fileName: "src/components/movie-card/movie-card.jsx",
+                                        lineNumber: 51,
+                                        columnNumber: 15
+                                    }, undefined)
+                                }, void 0, false, {
+                                    fileName: "src/components/movie-card/movie-card.jsx",
+                                    lineNumber: 50,
+                                    columnNumber: 13
+                                }, undefined)
+                            ]
+                        }, void 0, true, {
                             fileName: "src/components/movie-card/movie-card.jsx",
                             lineNumber: 34,
                             columnNumber: 11
