@@ -1,8 +1,12 @@
-# myFlix - Client-Side Component 🎬
+<p align="center">
+  <img src="img/myflixreact.png" width="800" alt="Image">
+</p>
+
+# myFlix - Client-Side Component (React) 🎬
 
 Welcome to myFlix! This is the client-side component of a web application that enhances your movie-watching experience. With myFlix, you can explore a vast collection of movies, save your favorites, and discover new films to watch.
 
-Table of Contents 📑
+## Table of Contents 📑
 
 - [Introduction](#introduction)
 - [Features](#features)
@@ -78,3 +82,7 @@ This project represents the client-side development of myFlix, complementing the
 ## Contributing 🤝
 
 If you'd like to contribute, please fork the repository and create a pull request. We welcome your contributions to make myFlix even better
+
+## License 📄
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
